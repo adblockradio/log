@@ -1,34 +1,35 @@
-var log = require("loglevel");
+//var log = require("loglevel");
 //log.setLevel("debug");
-log.enableAll();
-var prefix = require('loglevel-plugin-prefix');
+//var prefix = require('loglevel-plugin-prefix');
 var chalk = require('chalk');
-var fs = require('fs');
-var util = require('util');
+//var fs = require('fs');
+//var util = require('util');
 var moment = require('moment');
 
 // #### logging decoration ####
 // see https://github.com/kutuluk/loglevel-plugin-prefix
-const colors = {
+/*const colors = {
   TRACE: chalk.magenta,
   DEBUG: chalk.cyan,
   INFO: chalk.blue,
   WARN: chalk.yellow,
   ERROR: chalk.red,
-};
+};*/
 
-prefix.reg(log);
-log.enableAll();
+//prefix.reg(log);
+//log.enableAll();
 
-prefix.apply(log, {
+/*prefix.apply(log, {
     format(level, name, timestamp) {
         return `${chalk.gray(`[${timestamp}]`)} ${colors[level.toUpperCase()](level)} ${chalk.green(`${name}:`)}`;
     },
-});
+});*/
+
+
 
 const WRITE_LOG = true;
 
-var logBuf = "";
+/*var logBuf = "";
 function writeLog(callback) {
     if (logBuf && WRITE_LOG) {
         fs.appendFile("log/" + moment(new Date()).format("MM-DD"), logBuf, function(err) {
@@ -39,52 +40,52 @@ function writeLog(callback) {
     } else if (callback) {
         callback();
     }
-}
-
-/*if (WRITE_LOG) {
-
-    var origLogInfo = log.info;
-    log.info = function(msg, ...args) { // probably a bit dirty...
-        logBuf += util.format(msg, ...args) + "\n";
-        origLog("bop");
-        return origLogInfo(msg, ...args);
-    }
-
-    var origLog = console.log;
-    console.log = function(msg, ...args) { // probably a bit dirty...
-        logBuf += util.format(msg, ...args) + "\n";
-        origLog("bip");
-        return origLog(msg, ...args);
-    }
-    var writeLogInterval = setInterval(writeLog, 1000);
 }*/
+/*if (WRITE_LOG) { = setInterval(writeLog, 1000);
+}*/
+
+const winston = require("winston");
+require('winston-daily-rotate-file');
+
+var transport = new (winston.transports.DailyRotateFile)({
+    filename: 'log/%DATE%',
+    datePattern: 'MM-DD',
+});
 
 module.exports = function(moduleName) {
 
-    var logger = log.getLogger(moduleName || "root");
-    if (WRITE_LOG) {
-        /*var orig = {};
-        var types = ["trace", "debug", "info", "warn", "error"];
-        for (let i=0; i<types.length; i++) {
-            orig[types[i]] = logger[types[i]];
-            logger[types[i]] = function(msg, ...args) { // probably a bit dirty...
-                logBuf += util.format(msg, ...args) + "\n";
-                return orig[types[i]](msg, ...args);
-            }
-        }*/
-        var origLog = console.log;
-        console.log = function(msg, ...args) { // probably a bit dirty...
-            logBuf += util.format(msg, ...args) + "\n";
-            return origLog(msg, ...args);
-        }
-        var writeLogInterval = setInterval(writeLog, 1000);
-    }
+    const { format } = require('logform');
+
+    const alignedWithColorsAndTime = format.combine(
+        format.colorize(),
+        format.timestamp(),
+        format.align(),
+        format.label({
+            label: moment(new Date()).format("HH:mm:ss")
+        }),
+        format.printf(info => `${chalk.gray(`[${info.label}]`)} ${info.level} ${chalk.cyan(`${moduleName}`)}: ${info.message}`)
+    );
+
+    const logger = winston.createLogger({
+        level: 'debug',
+        format: alignedWithColorsAndTime, //winston.format.json(),
+        transports: [
+            new winston.transports.Console(), //{ format: winston.format.simple() }),
+            new winston.transports.File({ filename: 'error.log', level: 'error' }),
+            transport
+        ]
+    });
+
 
     return {
         log: logger,
         flushLog: function(callback) {
-            clearInterval(writeLogInterval);
-            writeLog(callback);
+            // TODO
+            callback();
         }
+        /*) {
+            //clearInterval(writeLogInterval);
+            writeLog(callback);
+        }*/
     }
 }
