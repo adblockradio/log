@@ -1,9 +1,4 @@
-//var log = require("loglevel");
-//log.setLevel("debug");
-//var prefix = require('loglevel-plugin-prefix');
 var chalk = require('chalk');
-//var fs = require('fs');
-//var util = require('util');
 var moment = require('moment');
 
 // #### logging decoration ####
@@ -16,34 +11,7 @@ var moment = require('moment');
   ERROR: chalk.red,
 };*/
 
-//prefix.reg(log);
-//log.enableAll();
-
-/*prefix.apply(log, {
-    format(level, name, timestamp) {
-        return `${chalk.gray(`[${timestamp}]`)} ${colors[level.toUpperCase()](level)} ${chalk.green(`${name}:`)}`;
-    },
-});*/
-
-
-
 const WRITE_LOG = true;
-
-/*var logBuf = "";
-function writeLog(callback) {
-    if (logBuf && WRITE_LOG) {
-        fs.appendFile("log/" + moment(new Date()).format("MM-DD"), logBuf, function(err) {
-            if (err) console.log("ERROR, could not write log to file log/" + moment(new Date()).format("MM-DD") + " : " + err);
-            if (callback) callback();
-        });
-        logBuf = "";
-    } else if (callback) {
-        callback();
-    }
-}*/
-/*if (WRITE_LOG) { = setInterval(writeLog, 1000);
-}*/
-
 const winston = require("winston");
 const { format } = require('logform');
 require('winston-daily-rotate-file');
@@ -55,7 +23,6 @@ var transport = new (winston.transports.DailyRotateFile)({
 
 module.exports = function(moduleName) {
 
-
     const alignedWithColorsAndTime = format.combine(
         format.colorize(),
         format.timestamp(),
@@ -65,14 +32,13 @@ module.exports = function(moduleName) {
 
     const logger = winston.createLogger({
         level: 'debug',
-        format: alignedWithColorsAndTime, //winston.format.json(),
+        format: alignedWithColorsAndTime,
         transports: [
-            new winston.transports.Console(), //{ format: winston.format.simple() }),
-            new winston.transports.File({ filename: 'error.log', level: 'error' }),
+            new winston.transports.Console(),
+            new winston.transports.File({ filename: 'log/error.log', level: 'error' }),
             transport
         ]
     });
-
 
     return {
         log: logger,
@@ -80,9 +46,5 @@ module.exports = function(moduleName) {
             // TODO
             callback();
         }
-        /*) {
-            //clearInterval(writeLogInterval);
-            writeLog(callback);
-        }*/
     }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "adblockradio-log",
+  "name": "abr-log",
   "version": "1.0.0",
   "description": "",
   "main": "log.js",
@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Alexandre Storelli <a_npm@storelli.fr>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^2.3.2",
     "moment": "^2.21.0",
