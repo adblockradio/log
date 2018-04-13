@@ -1,0 +1,17 @@
+{
+  "name": "adblockradio-log",
+  "version": "1.0.0",
+  "description": "",
+  "main": "log.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexandre Storelli <a_npm@storelli.fr>",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.3.2",
+    "moment": "^2.21.0",
+    "winston": "^3.0.0-rc3",
+    "winston-daily-rotate-file": "^3.0.1"
+  }
+}
