@@ -45,6 +45,7 @@ function writeLog(callback) {
 }*/
 
 const winston = require("winston");
+const { format } = require('logform');
 require('winston-daily-rotate-file');
 
 var transport = new (winston.transports.DailyRotateFile)({
@@ -54,16 +55,12 @@ var transport = new (winston.transports.DailyRotateFile)({
 
 module.exports = function(moduleName) {
 
-    const { format } = require('logform');
 
     const alignedWithColorsAndTime = format.combine(
         format.colorize(),
         format.timestamp(),
         format.align(),
-        format.label({
-            label: moment(new Date()).format("HH:mm:ss")
-        }),
-        format.printf(info => `${chalk.gray(`[${info.label}]`)} ${info.level} ${chalk.cyan(`${moduleName}`)}: ${info.message}`)
+        format.printf(info => `${chalk.gray(`[${info.timestamp}]`)} ${info.level} ${chalk.cyan(`${moduleName}`)}: ${info.message}`)
     );
 
     const logger = winston.createLogger({
