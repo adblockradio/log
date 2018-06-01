@@ -14,14 +14,11 @@ const moment = require('moment');
 const WRITE_LOG = true;
 const winston = require("winston");
 const { format } = require('logform');
-require('winston-daily-rotate-file');
+const DailyRotateFile = require('winston-daily-rotate-file');
 
 const transportConsole = new winston.transports.Console();
 const transportFileError = new winston.transports.File({ filename: 'log/error.log', level: 'error' });
-const transportFileRegular = new (winston.transports.DailyRotateFile)({
-    filename: 'log/%DATE%',
-    datePattern: 'MM-DD',
-});
+const transportFileRegular = new DailyRotateFile({ filename: 'log/%DATE%', datePattern: 'MM-DD' });
 
 module.exports = function(moduleName) {
 
