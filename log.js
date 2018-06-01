@@ -1,5 +1,5 @@
-var chalk = require('chalk');
-var moment = require('moment');
+const chalk = require('chalk');
+const moment = require('moment');
 
 // #### logging decoration ####
 // see https://github.com/kutuluk/loglevel-plugin-prefix
@@ -16,7 +16,9 @@ const winston = require("winston");
 const { format } = require('logform');
 require('winston-daily-rotate-file');
 
-var transport = new (winston.transports.DailyRotateFile)({
+const transportConsole = new winston.transports.Console();
+const transportFileError = new winston.transports.File({ filename: 'log/error.log', level: 'error' });
+const transportFileRegular = new (winston.transports.DailyRotateFile)({
     filename: 'log/%DATE%',
     datePattern: 'MM-DD',
 });
@@ -34,9 +36,9 @@ module.exports = function(moduleName) {
         level: 'debug',
         format: alignedWithColorsAndTime,
         transports: [
-            new winston.transports.Console(),
-            new winston.transports.File({ filename: 'log/error.log', level: 'error' }),
-            transport
+            transportConsole,
+            transportFileError,
+            transportFileRegular
         ]
     });
 
