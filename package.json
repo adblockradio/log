@@ -1,6 +1,6 @@
 {
   "name": "abr-log",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "log.js",
   "scripts": {
@@ -10,9 +10,9 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.3.2",
-    "logform": "^1.9.0",
+    "logform": "^1.9.1",
     "moment": "^2.21.0",
     "winston": "^3.0.0",
-    "winston-daily-rotate-file": "^3.0.1"
+    "winston-daily-rotate-file": "^3.2.3"
   }
 }

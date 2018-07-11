@@ -20,6 +20,13 @@ const transportConsole = new winston.transports.Console();
 const transportFileError = new winston.transports.File({ filename: 'log/error.log', level: 'error' });
 const transportFileRegular = new DailyRotateFile({ filename: 'log/%DATE%', datePattern: 'MM-DD' });
 
+// to avoid annoying warnings such as
+// (node:3666) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 unpipe listeners added. Use emitter.setMaxListeners() to increase limit
+// when log is used in a project with more than 10 modules.
+transportConsole.setMaxListeners(100);
+transportFileError.setMaxListeners(100);
+transportFileRegular.setMaxListeners(100);
+
 module.exports = function(moduleName) {
 
     const alignedWithColorsAndTime = format.combine(
@@ -42,7 +49,7 @@ module.exports = function(moduleName) {
     return {
         log: logger,
         flushLog: function(callback) {
-            // TODO
+            // TODO https://github.com/winstonjs/winston#awaiting-logs-to-be-written-in-winston
             callback();
         }
     }
