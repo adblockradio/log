@@ -5,7 +5,7 @@
 - log saving with daily file rotate
 
 ## Installation
-Add the line `"abr-log": "git+https://git@github.com/dest4/log.git",` to your package.json. Then `npm install`.
+`npm install abr-log --save`
 
 ## Usage
 ```
