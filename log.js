@@ -1,23 +1,9 @@
 const chalk = require('chalk');
-const moment = require('moment');
-
-// #### logging decoration ####
-// see https://github.com/kutuluk/loglevel-plugin-prefix
-/*const colors = {
-  TRACE: chalk.magenta,
-  DEBUG: chalk.cyan,
-  INFO: chalk.blue,
-  WARN: chalk.yellow,
-  ERROR: chalk.red,
-};*/
-
-const WRITE_LOG = true;
-const winston = require("winston");
-const { format } = require('logform');
+const { createLogger, format, transports } = require("winston");
 const DailyRotateFile = require('winston-daily-rotate-file');
 
-const transportConsole = new winston.transports.Console();
-const transportFileError = new winston.transports.File({ filename: 'log/error.log', level: 'error' });
+const transportConsole = new transports.Console();
+const transportFileError = new transports.File({ filename: 'log/error.log', level: 'error' });
 const transportFileRegular = new DailyRotateFile({ filename: 'log/%DATE%', datePattern: 'MM-DD' });
 
 // to avoid annoying warnings such as
@@ -36,7 +22,7 @@ module.exports = function(moduleName) {
         format.printf(info => `${chalk.gray(`[${info.timestamp}]`)} ${info.level} ${chalk.cyan(`${moduleName}`)}: ${info.message}`)
     );
 
-    const logger = winston.createLogger({
+    const logger = createLogger({
         level: 'debug',
         format: alignedWithColorsAndTime,
         transports: [
